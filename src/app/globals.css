@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 249 244 236;
+  --foreground: 36 31 27;
+  --card: 255 252 247;
+  --line: 220 212 201;
+  --stone: 120 110 98;
+  --beige: 238 230 217;
+  --cream: 252 248 242;
+  --sage: 188 210 196;
+  --rose: 220 194 189;
+  --lavender: 214 205 224;
+  --peach: 239 213 193;
+  --gold: 232 219 175;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(232, 219, 175, 0.2), transparent 20%),
+    radial-gradient(circle at 80% 10%, rgba(188, 210, 196, 0.15), transparent 25%),
+    linear-gradient(180deg, rgba(255, 252, 247, 1) 0%, rgba(249, 244, 236, 1) 100%);
+  color: rgb(var(--foreground));
+}
+
+body::before {
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: fixed;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.24) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.24) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.4), transparent 100%);
+}
+
+::selection {
+  background: rgba(188, 210, 196, 0.6);
+}
+
+.section-shell {
+  @apply mx-auto max-w-7xl px-4 md:px-6 lg:px-8;
+}
+
+.article-content {
+  @apply space-y-6 text-[17px] leading-8 text-stone;
+}
+
+.article-content h2 {
+  @apply font-serif text-3xl leading-tight text-foreground;
+}
+
+.article-content p {
+  @apply text-base leading-8 text-stone md:text-lg;
+}
+
+.article-content ul {
+  @apply list-disc space-y-3 pl-6;
+}
+
+.article-content a {
+  @apply text-foreground underline decoration-stone/40 underline-offset-4;
+}
+
+.article-content img {
+  @apply rounded-[1.75rem];
+}
