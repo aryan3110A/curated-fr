@@ -12,7 +12,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getHomePageData } from "@/services/content";
 
 export default async function HomePage() {
-  const { blogs, categories, featuredBlogs, trendingBlogs, productShowcase } = await getHomePageData();
+  const { blogs, categories, featuredBlogs, trendingBlogs, productShowcase } =
+    await getHomePageData();
 
   return (
     <div className="space-y-24 py-10 md:space-y-32 md:py-14">
@@ -21,14 +22,18 @@ export default async function HomePage() {
           <Reveal>
             <div className="space-y-8 rounded-[2.5rem] border border-white/70 bg-white/80 p-8 shadow-float md:p-12">
               <div className="inline-flex items-center gap-2 rounded-full border border-line bg-beige px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-stone">
-                <Sparkles className="h-4 w-4" /> Pinterest-first editorial engine
+                <Sparkles className="h-4 w-4" /> Pinterest-first editorial
+                engine
               </div>
               <div className="space-y-5">
                 <h1 className="max-w-4xl font-serif text-5xl leading-[0.95] text-foreground md:text-7xl">
-                  Premium visual blogging built for saves, clicks, and elegant conversions.
+                  Premium visual blogging built for saves, clicks, and elegant
+                  conversions.
                 </h1>
                 <p className="max-w-2xl text-lg leading-8 text-stone md:text-xl">
-                  CuratedCounter merges Pinterest-inspired layouts, SEO-focused storytelling, and affiliate-ready product surfaces into one calm, high-conviction editorial platform.
+                  CuratedCounter merges Pinterest-inspired layouts, SEO-focused
+                  storytelling, and affiliate-ready product surfaces into one
+                  calm, high-conviction editorial platform.
                 </p>
               </div>
               <div className="flex flex-wrap gap-4">
@@ -49,10 +54,19 @@ export default async function HomePage() {
               {featuredBlogs.map((blog, index) => (
                 <Card className="overflow-hidden bg-card/95" key={blog.id}>
                   <CardContent className="space-y-4 p-6">
-                    <p className="text-xs uppercase tracking-[0.24em] text-stone">Featured story {String(index + 1).padStart(2, "0")}</p>
-                    <h2 className="font-serif text-3xl leading-tight text-foreground">{blog.title}</h2>
-                    <p className="text-sm leading-7 text-stone">{blog.excerpt}</p>
-                    <Link className="text-sm font-semibold text-foreground underline decoration-stone/30 underline-offset-4" href={`/blog/${blog.slug}`}>
+                    <p className="text-xs uppercase tracking-[0.24em] text-stone">
+                      Featured story {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <h2 className="font-serif text-3xl leading-tight text-foreground">
+                      {blog.title}
+                    </h2>
+                    <p className="text-sm leading-7 text-stone">
+                      {blog.excerpt}
+                    </p>
+                    <Link
+                      className="text-sm font-semibold text-foreground underline decoration-stone/30 underline-offset-4"
+                      href={`/blog/${blog.slug}`}
+                    >
                       Read article
                     </Link>
                   </CardContent>
@@ -92,9 +106,16 @@ export default async function HomePage() {
                 href={`/blog?category=${category.slug}`}
                 key={category.id}
               >
-                <p className="text-xs uppercase tracking-[0.24em] text-stone">{String(index + 1).padStart(2, "0")}</p>
-                <h3 className="mt-4 font-serif text-3xl text-foreground">{category.name}</h3>
-                <p className="mt-2 text-sm leading-7 text-stone">Pins, product moments, and stories shaped for readers who click through from visual inspiration.</p>
+                <p className="text-xs uppercase tracking-[0.24em] text-stone">
+                  {String(index + 1).padStart(2, "0")}
+                </p>
+                <h3 className="mt-4 font-serif text-3xl text-foreground">
+                  {category.name}
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-stone">
+                  Pins, product moments, and stories shaped for readers who
+                  click through from visual inspiration.
+                </p>
               </Link>
             ))}
           </div>
@@ -115,14 +136,21 @@ export default async function HomePage() {
               <Card className="bg-white/85" key={blog.id}>
                 <CardContent className="space-y-4 p-6">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs uppercase tracking-[0.24em] text-stone">{blog.views} views</span>
+                    <span className="text-xs uppercase tracking-[0.24em] text-stone">
+                      {blog.views} views
+                    </span>
                     <span className="rounded-full bg-sage/25 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground">
                       {blog.readingTime} min read
                     </span>
                   </div>
-                  <h3 className="font-serif text-2xl text-foreground">{blog.title}</h3>
+                  <h3 className="font-serif text-2xl text-foreground">
+                    {blog.title}
+                  </h3>
                   <p className="text-sm leading-7 text-stone">{blog.excerpt}</p>
-                  <Link className="text-sm font-semibold text-foreground" href={`/blog/${blog.slug}`}>
+                  <Link
+                    className="text-sm font-semibold text-foreground"
+                    href={`/blog/${blog.slug}`}
+                  >
                     View story
                   </Link>
                 </CardContent>
@@ -143,7 +171,11 @@ export default async function HomePage() {
         <Reveal delay={0.08}>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {productShowcase.map((product) => (
-              <ProductCard blogHref={`/blog/${product.blogSlug}`} key={`${product.blogSlug}-${product.id}`} product={product} />
+              <ProductCard
+                blogHref={`/blog/${product.blogSlug}`}
+                key={`${product.blogSlug}-${product.id}`}
+                product={product}
+              />
             ))}
           </div>
         </Reveal>
