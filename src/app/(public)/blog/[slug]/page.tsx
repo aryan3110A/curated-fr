@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { BlogCard } from "@/components/blog/blog-card";
+import { BlogVisitTracker } from "@/components/blog/blog-visit-tracker";
 import { ProductCard } from "@/components/blog/product-card";
 import { MediaPlaceholder } from "@/components/shared/media-placeholder";
 import { ShareButtons } from "@/components/shared/share-buttons";
@@ -94,6 +95,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
 
   return (
     <div className="space-y-16 py-10 md:space-y-20 md:py-14">
+      <BlogVisitTracker slug={blog.slug} />
       <script
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         type="application/ld+json"
@@ -157,6 +159,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
               </p>
               <div className="space-y-3 text-sm leading-7 text-stone">
                 <p>{blog.views} total views</p>
+                <p>{blog.uniqueViews} unique visitors</p>
                 <p>{blog.products.length} linked product recommendations</p>
                 <p>{blog.tags.length} topic tags</p>
                 {blog.pinterestUrl ? (

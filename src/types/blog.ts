@@ -44,6 +44,7 @@ export type BlogCardData = {
   status: BlogStatus;
   readingTime: number;
   views: number;
+  uniqueViews: number;
   createdAt: string;
   updatedAt?: string;
   metaTitle?: string | null;

@@ -117,7 +117,7 @@ export default async function HomePage() {
                   <div className="flex items-center justify-between gap-3">
                     <span className="text-xs uppercase tracking-[0.24em] text-stone">{blog.views} views</span>
                     <span className="rounded-full bg-sage/25 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground">
-                      {blog.readingTime} min
+                      {blog.readingTime} min read
                     </span>
                   </div>
                   <h3 className="font-serif text-2xl text-foreground">{blog.title}</h3>

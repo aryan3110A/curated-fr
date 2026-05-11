@@ -43,7 +43,7 @@ export const BlogCard = ({ blog }: { blog: BlogCardData }) => {
             <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-3">
               <Badge variant="gold">{blog.category?.name ?? "Editorial"}</Badge>
               <span className="rounded-full bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-stone">
-                {blog.readingTime} min
+                {blog.readingTime} min read
               </span>
             </div>
           </div>
