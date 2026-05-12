@@ -47,7 +47,7 @@ const blogFormSchema = z.object({
   tagIds: z.array(z.string()).default([]),
   metaTitle: z.string().optional().default(""),
   metaDescription: z.string().optional().default(""),
-  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
+  status: z.enum(["DRAFT", "PUBLISHED"]).default("PUBLISHED"),
   products: z.array(productSchema).default([]),
 });
 
@@ -63,7 +63,7 @@ const emptyValues: BlogFormValues = {
   tagIds: [],
   metaTitle: "",
   metaDescription: "",
-  status: "DRAFT",
+  status: "PUBLISHED",
   products: [],
 };
 
@@ -234,18 +234,46 @@ export const BlogForm = ({
           content: form.getValues("content"),
         })}
         onApplyBlog={(payload) => {
-          form.setValue("title", payload.title, { shouldDirty: true });
-          form.setValue("excerpt", payload.excerpt, { shouldDirty: true });
-          form.setValue("content", payload.content, { shouldDirty: true });
-          form.setValue("metaTitle", payload.seoTitle, { shouldDirty: true });
+          const currentSlug = form.getValues("slug");
+          const shouldReplaceSlug =
+            !currentSlug.trim() || !form.getFieldState("slug").isDirty;
+
+          form.setValue("title", payload.title, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+
+          if (shouldReplaceSlug) {
+            form.setValue("slug", toSlug(payload.title), {
+              shouldValidate: true,
+            });
+          }
+
+          form.setValue("excerpt", payload.excerpt, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+          form.setValue("content", payload.content, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
+          form.setValue("metaTitle", payload.seoTitle, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
           form.setValue("metaDescription", payload.metaDescription, {
             shouldDirty: true,
+            shouldValidate: true,
           });
         }}
         onApplySeo={(payload) => {
-          form.setValue("metaTitle", payload.seoTitle, { shouldDirty: true });
+          form.setValue("metaTitle", payload.seoTitle, {
+            shouldDirty: true,
+            shouldValidate: true,
+          });
           form.setValue("metaDescription", payload.metaDescription, {
             shouldDirty: true,
+            shouldValidate: true,
           });
         }}
       />
