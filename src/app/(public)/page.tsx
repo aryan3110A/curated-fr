@@ -87,7 +87,7 @@ export default async function HomePage() {
         </Reveal>
       </section>
 
-      <section className="section-shell grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+      {/* <section className="section-shell grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <Reveal>
           <SectionHeading
             description="Categories are structured around Pinterest-worthy content themes that still read like polished editorial sections."
@@ -117,9 +117,9 @@ export default async function HomePage() {
             ))}
           </div>
         </Reveal>
-      </section>
+      </section> */}
 
-      <section className="section-shell space-y-8">
+      {/* <section className="section-shell space-y-8">
         <Reveal>
           <SectionHeading
             description="These are the stories currently earning the strongest attention signals and click-ready momentum."
@@ -155,7 +155,7 @@ export default async function HomePage() {
             ))}
           </div>
         </Reveal>
-      </section>
+      </section> */}
 
       <section className="section-shell space-y-8">
         <Reveal>
