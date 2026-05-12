@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ADMIN_ENTRY_PATH } from "@/config/admin-entry";
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { authApi } from "@/services/api/auth";
@@ -46,7 +47,7 @@ export const AdminShell = ({ children }: { children: React.ReactNode }) => {
           <Button
             onClick={() => {
               clearUser();
-              router.replace("/login");
+              router.replace(ADMIN_ENTRY_PATH);
             }}
             type="button"
           >
@@ -108,7 +109,7 @@ export const AdminShell = ({ children }: { children: React.ReactNode }) => {
                   await authApi.logout();
                   clearUser();
                   toast.success("Logged out successfully.");
-                  router.replace("/login");
+                  router.replace(ADMIN_ENTRY_PATH);
                 } finally {
                   setIsLoggingOut(false);
                 }

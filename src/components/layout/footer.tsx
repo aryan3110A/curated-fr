@@ -23,9 +23,6 @@ export const Footer = () => {
           </div>
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone">Platform</p>
-            <Link className="block text-sm text-foreground/80 transition hover:text-foreground" href="/login">
-              Admin access
-            </Link>
             <p className="text-sm text-foreground/80">hello@curatedcounter.com</p>
             <p className="text-sm text-foreground/80">Pinterest-ready content, elegant conversions.</p>
           </div>

@@ -2,8 +2,6 @@ import Link from "next/link";
 
 import { siteConfig } from "@/config/site";
 
-import { Button } from "../ui/button";
-
 export const Navbar = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-line/70 bg-background/80 backdrop-blur-xl">
@@ -24,9 +22,6 @@ export const Navbar = () => {
             </Link>
           ))}
         </nav>
-        <Button asChild variant="secondary">
-          <Link href="/login">Admin Login</Link>
-        </Button>
       </div>
     </header>
   );

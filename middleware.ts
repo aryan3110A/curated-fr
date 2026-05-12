@@ -1,13 +1,15 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { ADMIN_ENTRY_PATH } from "./src/config/admin-entry";
+
 const protectedRoutes = ["/dashboard", "/blogs", "/create-blog", "/edit-blog", "/media", "/analytics"];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("cc_access_token")?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL(ADMIN_ENTRY_PATH, request.url));
   }
 
   return NextResponse.next();
