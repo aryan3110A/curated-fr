@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/shared/section-heading";
 
 export const metadata: Metadata = {
   title: "Admin Login",
-  description: "Secure login for CuratedCounter admins and editors."
+  description: "Secure login for CuratedCounter admins and editors.",
 };
 
 export default function AdminEntryPage() {

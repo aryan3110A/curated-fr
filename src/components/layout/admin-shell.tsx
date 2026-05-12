@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ImageIcon, LayoutDashboard, LineChart, LogOut, Newspaper, PencilLine, ShieldCheck } from "lucide-react";
+import {
+  ImageIcon,
+  LayoutDashboard,
+  LineChart,
+  LogOut,
+  Newspaper,
+  PencilLine,
+  ShieldCheck,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -21,7 +29,7 @@ const iconMap = {
   "/blogs": Newspaper,
   "/create-blog": PencilLine,
   "/media": ImageIcon,
-  "/analytics": LineChart
+  "/analytics": LineChart,
 } as const;
 
 export const AdminShell = ({ children }: { children: React.ReactNode }) => {
@@ -34,7 +42,9 @@ export const AdminShell = ({ children }: { children: React.ReactNode }) => {
   if (isLoading) {
     return (
       <div className="section-shell py-12">
-        <Card className="rounded-[2rem] p-8 text-sm text-stone">Loading admin workspace...</Card>
+        <Card className="rounded-[2rem] p-8 text-sm text-stone">
+          Loading admin workspace...
+        </Card>
       </div>
     );
   }
@@ -69,20 +79,26 @@ export const AdminShell = ({ children }: { children: React.ReactNode }) => {
               </div>
               <div>
                 <p className="font-serif text-3xl text-foreground">Admin</p>
-                <p className="text-sm leading-7 text-stone">Manage content, media, and AI-assisted publishing workflows.</p>
+                <p className="text-sm leading-7 text-stone">
+                  Manage content, media, and AI-assisted publishing workflows.
+                </p>
               </div>
             </div>
 
             <div className="space-y-2">
               {siteConfig.adminNavigation.map((item) => {
                 const Icon = iconMap[item.href as keyof typeof iconMap];
-                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                const active =
+                  pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
 
                 return (
                   <Link
                     className={cn(
                       "flex items-center gap-3 rounded-[1.25rem] px-4 py-3 text-sm font-medium transition",
-                      active ? "bg-foreground text-background" : "text-stone hover:bg-beige hover:text-foreground"
+                      active
+                        ? "bg-foreground text-background"
+                        : "text-stone hover:bg-beige hover:text-foreground",
                     )}
                     href={item.href}
                     key={item.href}
@@ -95,10 +111,14 @@ export const AdminShell = ({ children }: { children: React.ReactNode }) => {
             </div>
 
             <div className="rounded-[1.5rem] border border-line bg-card/80 p-4">
-              <p className="text-xs uppercase tracking-[0.24em] text-stone">Signed in as</p>
+              <p className="text-xs uppercase tracking-[0.24em] text-stone">
+                Signed in as
+              </p>
               <p className="mt-3 font-semibold text-foreground">{user.name}</p>
               <p className="text-sm text-stone">{user.email}</p>
-              <p className="mt-2 text-xs uppercase tracking-[0.24em] text-stone">{user.role}</p>
+              <p className="mt-2 text-xs uppercase tracking-[0.24em] text-stone">
+                {user.role}
+              </p>
             </div>
 
             <Button

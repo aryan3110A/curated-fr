@@ -3,7 +3,14 @@ import { NextResponse } from "next/server";
 
 import { ADMIN_ENTRY_PATH } from "./src/config/admin-entry";
 
-const protectedRoutes = ["/dashboard", "/blogs", "/create-blog", "/edit-blog", "/media", "/analytics"];
+const protectedRoutes = [
+  "/dashboard",
+  "/blogs",
+  "/create-blog",
+  "/edit-blog",
+  "/media",
+  "/analytics",
+];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("cc_access_token")?.value;
@@ -16,5 +23,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: protectedRoutes.map((route) => `${route}/:path*`)
+  matcher: protectedRoutes.map((route) => `${route}/:path*`),
 };
