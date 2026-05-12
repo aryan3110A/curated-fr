@@ -1,0 +1,796 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #F8F4EF;
+    --warm-white: #FDFAF6;
+    --sage: #8FA68A;
+    --sage-light: #C5D4BF;
+    --sage-dark: #5C7A56;
+    --rose: #C9836E;
+    --rose-light: #F0DDD6;
+    --gold: #C4A25A;
+    --gold-light: #EEE0BF;
+    --charcoal: #2C2A26;
+    --muted: #7A7468;
+    --border: rgba(143,166,138,0.22);
+  }
+
+  .blog-section {
+    font-family: 'Jost', sans-serif;
+    background: var(--warm-white);
+    width: 100%;
+    padding: 80px 48px 96px;
+  }
+
+  /* Section header */
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 52px;
+    padding-bottom: 28px;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .header-left { max-width: 480px; }
+
+  .section-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .eyebrow-dash {
+    width: 28px;
+    height: 0.5px;
+    background: var(--gold);
+  }
+
+  .eyebrow-label {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--charcoal);
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  .section-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 17px;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 14px;
+  }
+
+  /* Filter pills */
+  .filter-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .filter-pill {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: transparent;
+    border: 0.5px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-pill:hover, .filter-pill.active {
+    background: var(--sage);
+    color: white;
+    border-color: var(--sage);
+  }
+
+  .view-all-link {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 0.5px solid var(--sage-light);
+    padding-bottom: 2px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .view-all-link:hover { color: var(--rose); border-bottom-color: var(--rose); }
+
+  /* FEATURED POST — big horizontal card */
+  .featured-post {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 32px;
+    background: var(--warm-white);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .featured-img {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+    background: #D4C9BC;
+  }
+
+  .featured-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease;
+  }
+
+  .featured-post:hover .featured-img img { transform: scale(1.04); }
+
+  .featured-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--rose);
+    color: white;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 2px;
+  }
+
+  .featured-body {
+    padding: 44px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: var(--cream);
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .post-cat {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+    background: rgba(143,166,138,0.13);
+    border: 0.5px solid rgba(143,166,138,0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  .post-date {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  .post-read-time {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .meta-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--sage-light);
+  }
+
+  .featured-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--charcoal);
+    margin-bottom: 14px;
+  }
+
+  .featured-excerpt {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 28px;
+  }
+
+  .read-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    text-decoration: none;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: all 0.2s ease;
+  }
+
+  .read-btn:hover { color: var(--rose); }
+
+  .read-btn-line {
+    width: 24px;
+    height: 0.5px;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+
+  .read-btn:hover .read-btn-line { width: 36px; }
+
+  /* Tags row */
+  .featured-tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    border: 0.5px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* GRID of smaller cards */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .post-card {
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--warm-white);
+    cursor: pointer;
+    transition: border-color 0.25s ease;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .post-card:hover { border-color: rgba(143,166,138,0.5); }
+
+  .card-img {
+    height: 200px;
+    overflow: hidden;
+    background: #D9CFC5;
+    position: relative;
+  }
+
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  .post-card:hover .card-img img { transform: scale(1.05); }
+
+  .card-body {
+    padding: 20px 22px 22px;
+  }
+
+  .card-cat-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .card-cat {
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+  }
+
+  .card-read-time {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+
+  .card-excerpt {
+    font-size: 12px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 0.5px solid var(--border);
+  }
+
+  .card-date {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  .card-arrow {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sage-dark);
+    font-size: 13px;
+    transition: all 0.2s ease;
+  }
+
+  .post-card:hover .card-arrow {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: white;
+  }
+
+  /* SECOND ROW — horizontal mini cards */
+  .posts-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .post-list-card {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    background: var(--warm-white);
+    cursor: pointer;
+    transition: border-color 0.25s ease;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .post-list-card:hover { border-color: rgba(143,166,138,0.5); }
+
+  .list-img {
+    width: 88px;
+    height: 88px;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #D9CFC5;
+  }
+
+  .list-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .post-list-card:hover .list-img img { transform: scale(1.08); }
+
+  .list-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .list-cat {
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage-dark);
+  }
+
+  .list-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--charcoal);
+    line-height: 1.35;
+  }
+
+  .list-meta {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Newsletter banner */
+  .newsletter-strip {
+    background: var(--cream);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: 36px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 0;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .newsletter-left {}
+
+  .newsletter-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+  }
+
+  .newsletter-title em { font-style: italic; color: var(--rose); }
+
+  .newsletter-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .newsletter-right {
+    display: flex;
+    gap: 0;
+    flex-shrink: 0;
+    border: 0.5px solid rgba(143,166,138,0.4);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .newsletter-input {
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--charcoal);
+    background: white;
+    border: none;
+    outline: none;
+    padding: 12px 20px;
+    width: 220px;
+  }
+
+  .newsletter-input::placeholder { color: var(--muted); }
+
+  .newsletter-btn {
+    background: var(--charcoal);
+    color: var(--cream);
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    cursor: pointer;
+    transition: background 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .newsletter-btn:hover { background: var(--rose); }
+
+  /* decorative leaf svg */
+  .nl-leaf {
+    opacity: 0.15;
+    flex-shrink: 0;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* placeholder bg images */
+  .ph-warm { background: #DDD0C2; }
+  .ph-sage { background: #B8C9B3; }
+  .ph-rose { background: #E2C4BA; }
+  .ph-linen { background: #E8DDD2; }
+  .ph-stone { background: #C9C1B5; }
+  .ph-moss { background: #A8B8A3; }
+</style>
+
+<h2 class="sr-only">Blog posts section for The Curated Counter home decor blog</h2>
+
+<div class="blog-section">
+
+  <!-- SECTION HEADER -->
+  <div class="section-header">
+    <div class="header-left">
+      <div class="section-eyebrow">
+        <span class="eyebrow-dash"></span>
+        <span class="eyebrow-label">Latest from the blog</span>
+      </div>
+      <h2 class="section-title">Stories worth <em>saving</em></h2>
+      <p class="section-subtitle">Editorial posts arranged like a living inspiration board</p>
+    </div>
+
+    <div class="header-right">
+      <div class="filter-pills">
+        <button class="filter-pill active">All</button>
+        <button class="filter-pill">Home Decor</button>
+        <button class="filter-pill">Slow Living</button>
+        <button class="filter-pill">Seasonal</button>
+        <button class="filter-pill">Workspaces</button>
+      </div>
+      <button class="view-all-link" onclick="sendPrompt('Show me all blog posts on The Curated Counter')">
+        View all stories
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 4l4 3-4 3" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- FEATURED POST -->
+  <div class="featured-post">
+    <div class="featured-img">
+      <img
+        src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=900&q=80"
+        alt="Linen layered living room with warm neutral tones"
+        onerror="this.style.display='none'; this.parentElement.classList.add('ph-warm');"
+      />
+      <div class="featured-badge">Featured</div>
+    </div>
+    <div class="featured-body">
+      <div class="post-meta">
+        <span class="post-cat">Slow Living</span>
+        <span class="meta-dot"></span>
+        <span class="post-date">Apr 28, 2026</span>
+        <span class="meta-dot"></span>
+        <span class="post-read-time">5 min read</span>
+      </div>
+      <h3 class="featured-title">Linen Layering Ideas for an Effortless Summer Home</h3>
+      <p class="featured-excerpt">Soft cream layers, muted stone accents, and breathable styling moves that keep visual rooms feeling airy and premium — all season long.</p>
+      <button class="read-btn">
+        <span class="read-btn-line"></span>
+        Read article
+      </button>
+      <div class="featured-tags">
+        <span class="tag">Minimal</span>
+        <span class="tag">Warm Neutrals</span>
+        <span class="tag">Textures</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3-COLUMN GRID -->
+  <div class="posts-grid">
+
+    <!-- Card 1 -->
+    <div class="post-card">
+      <div class="card-img">
+        <img
+          src="https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?auto=format&fit=crop&w=600&q=80"
+          alt="Small boutique hotel bedroom with layered textiles"
+          onerror="this.style.display='none'; this.parentElement.classList.add('ph-stone');"
+        />
+      </div>
+      <div class="card-body">
+        <div class="card-cat-row">
+          <span class="card-cat">Home Decor</span>
+          <span class="card-read-time">5 min</span>
+        </div>
+        <h3 class="card-title">Small Bedroom Pinterest Ideas With Boutique-Hotel Energy</h3>
+        <p class="card-excerpt">Turn a compact bedroom into a high-save Pinterest visual with soft lighting and layered textiles.</p>
+        <div class="card-footer">
+          <span class="card-date">Apr 21, 2026</span>
+          <div class="card-arrow">
+            <i class="ti ti-arrow-right" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="post-card">
+      <div class="card-img">
+        <img
+          src="https://images.unsplash.com/photo-1567016376408-0226e4d0c1ea?auto=format&fit=crop&w=600&q=80"
+          alt="Minimal warm living room with travertine and boucle"
+          onerror="this.style.display='none'; this.parentElement.classList.add('ph-sage');"
+        />
+      </div>
+      <div class="card-body">
+        <div class="card-cat-row">
+          <span class="card-cat">Home Decor</span>
+          <span class="card-read-time">4 min</span>
+        </div>
+        <h3 class="card-title">Minimal Living Room Ideas That Still Feel Warm</h3>
+        <p class="card-excerpt">A Pinterest-friendly guide to creating a serene living room with texture, warmth, and restrained styling.</p>
+        <div class="card-footer">
+          <span class="card-date">Apr 10, 2026</span>
+          <div class="card-arrow">
+            <i class="ti ti-arrow-right" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="post-card">
+      <div class="card-img">
+        <img
+          src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=600&q=80"
+          alt="Slow morning routine with ceramics and coffee"
+          onerror="this.style.display='none'; this.parentElement.classList.add('ph-rose');"
+        />
+      </div>
+      <div class="card-body">
+        <div class="card-cat-row">
+          <span class="card-cat">Slow Living</span>
+          <span class="card-read-time">4 min</span>
+        </div>
+        <h3 class="card-title">Slow Morning Routine Ideas for a Softer Home Aesthetic</h3>
+        <p class="card-excerpt">Build Pinterest-worthy rituals into your mornings with calm surfaces and beautiful utility.</p>
+        <div class="card-footer">
+          <span class="card-date">Apr 3, 2026</span>
+          <div class="card-arrow">
+            <i class="ti ti-arrow-right" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HORIZONTAL MINI CARDS -->
+  <div class="posts-list">
+
+    <div class="post-list-card">
+      <div class="list-img">
+        <img
+          src="https://images.unsplash.com/photo-1615874694520-474822394e73?auto=format&fit=crop&w=200&q=80"
+          alt="Minimal styled home office desk"
+          onerror="this.style.display='none'; this.parentElement.classList.add('ph-linen');"
+        />
+      </div>
+      <div class="list-body">
+        <span class="list-cat">Workspaces</span>
+        <span class="list-title">Desk Styling Ideas That Make Home Offices Feel Focused</span>
+        <div class="list-meta">
+          <span>Mar 30, 2026</span>
+          <span class="meta-dot"></span>
+          <span>6 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-list-card">
+      <div class="list-img">
+        <img
+          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=200&q=80"
+          alt="Spring entryway with florals and warm wood"
+          onerror="this.style.display='none'; this.parentElement.classList.add('ph-moss');"
+        />
+      </div>
+      <div class="list-body">
+        <span class="list-cat">Seasonal Styling</span>
+        <span class="list-title">Spring Entryway Refresh Ideas for High-Save Pinterest Pins</span>
+        <div class="list-meta">
+          <span>Mar 18, 2026</span>
+          <span class="meta-dot"></span>
+          <span>5 min read</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NEWSLETTER STRIP -->
+  <div class="newsletter-strip">
+    <svg class="nl-leaf" width="48" height="80" viewBox="0 0 48 80" fill="none">
+      <path d="M24 80 Q24 60 24 40" stroke="#8FA68A" stroke-width="1"/>
+      <ellipse cx="14" cy="32" rx="12" ry="7" fill="#8FA68A" transform="rotate(-30 14 32)"/>
+      <ellipse cx="34" cy="20" rx="12" ry="6" fill="#8FA68A" transform="rotate(25 34 20)"/>
+      <ellipse cx="14" cy="10" rx="10" ry="5" fill="#8FA68A" transform="rotate(-35 14 10)"/>
+    </svg>
+
+    <div class="newsletter-left">
+      <h3 class="newsletter-title">Weekly visual briefs for <em>inspired</em> homes</h3>
+      <p class="newsletter-desc">Editorial angles, visual hooks, and affiliate-ready ideas — without the inbox noise.</p>
+    </div>
+
+    <div class="newsletter-right">
+      <input class="newsletter-input" type="email" placeholder="your@email.com" />
+      <button class="newsletter-btn">Join the list</button>
+    </div>
+
+    <svg class="nl-leaf" width="48" height="80" viewBox="0 0 48 80" fill="none" style="transform: scaleX(-1);">
+      <path d="M24 80 Q24 60 24 40" stroke="#8FA68A" stroke-width="1"/>
+      <ellipse cx="14" cy="32" rx="12" ry="7" fill="#8FA68A" transform="rotate(-30 14 32)"/>
+      <ellipse cx="34" cy="20" rx="12" ry="6" fill="#8FA68A" transform="rotate(25 34 20)"/>
+      <ellipse cx="14" cy="10" rx="10" ry="5" fill="#8FA68A" transform="rotate(-35 14 10)"/>
+    </svg>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
