@@ -1,0 +1,1 @@
+export const ADMIN_ENTRY_PATH = "/editorial-vault-cc7m4k";

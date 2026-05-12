@@ -42,9 +42,6 @@ export default async function HomePage() {
                     Explore stories <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="secondary">
-                  <Link href="/login">Enter admin workspace</Link>
-                </Button>
               </div>
               <SearchBar action="/search" />
             </div>
