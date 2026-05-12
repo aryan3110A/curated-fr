@@ -11,9 +11,16 @@ import { z } from "zod";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { siteConfig } from "@/config/site";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { blogsApi, type BlogPayload } from "@/services/api/blogs";
 import { taxonomiesApi } from "@/services/api/taxonomies";
@@ -27,7 +34,7 @@ const productSchema = z.object({
   description: z.string().min(10).max(500),
   image: z.string().optional().default(""),
   buyUrl: z.string().url(),
-  price: z.string().optional().default("")
+  price: z.string().optional().default(""),
 });
 
 const blogFormSchema = z.object({
@@ -40,9 +47,8 @@ const blogFormSchema = z.object({
   tagIds: z.array(z.string()).default([]),
   metaTitle: z.string().optional().default(""),
   metaDescription: z.string().optional().default(""),
-  pinterestUrl: z.string().optional().default(""),
   status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
-  products: z.array(productSchema).default([])
+  products: z.array(productSchema).default([]),
 });
 
 type BlogFormValues = z.infer<typeof blogFormSchema>;
@@ -57,9 +63,8 @@ const emptyValues: BlogFormValues = {
   tagIds: [],
   metaTitle: "",
   metaDescription: "",
-  pinterestUrl: "",
   status: "DRAFT",
-  products: []
+  products: [],
 };
 
 const selectClassName =
@@ -79,41 +84,50 @@ const normalizePayload = (values: BlogFormValues): BlogPayload => ({
   categoryId: values.categoryId || undefined,
   metaTitle: values.metaTitle || undefined,
   metaDescription: values.metaDescription || undefined,
-  pinterestUrl: values.pinterestUrl || undefined,
   products: values.products.map((product) => ({
     ...product,
     image: product.image || undefined,
-    price: product.price || undefined
-  }))
+    price: product.price || undefined,
+  })),
 });
 
-export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "edit" }) => {
+export const BlogForm = ({
+  blogId,
+  mode,
+}: {
+  blogId?: string;
+  mode: "create" | "edit";
+}) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const form = useForm<BlogFormValues>({
     resolver: zodResolver(blogFormSchema),
-    defaultValues: emptyValues
+    defaultValues: emptyValues,
   });
   const watchedTitle = form.watch("title");
+  const watchedSlug = form.watch("slug");
   const watchedTagIds = form.watch("tagIds");
+  const publicUrlPreview = watchedSlug
+    ? `${siteConfig.url}/blog/${watchedSlug}`
+    : `${siteConfig.url}/blog/your-slug`;
 
   const categoriesQuery = useQuery({
     queryKey: ["taxonomies", "categories"],
-    queryFn: taxonomiesApi.categories
+    queryFn: taxonomiesApi.categories,
   });
   const tagsQuery = useQuery({
     queryKey: ["taxonomies", "tags"],
-    queryFn: taxonomiesApi.tags
+    queryFn: taxonomiesApi.tags,
   });
   const existingBlogQuery = useQuery({
     queryKey: ["admin", "blog", blogId],
     queryFn: () => blogsApi.getById(blogId as string),
-    enabled: mode === "edit" && Boolean(blogId)
+    enabled: mode === "edit" && Boolean(blogId),
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "products"
+    name: "products",
   });
 
   useEffect(() => {
@@ -138,25 +152,38 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
       tagIds: blog.tags.map((tag) => tag.id),
       metaTitle: blog.metaTitle || "",
       metaDescription: blog.metaDescription || "",
-      pinterestUrl: blog.pinterestUrl || "",
       status: blog.status,
       products: blog.products.map((product) => ({
         title: product.title,
         description: product.description,
         image: product.image || "",
         buyUrl: product.buyUrl,
-        price: product.price || ""
-      }))
+        price: product.price || "",
+      })),
     });
   }, [existingBlogQuery.data, form]);
 
   const saveMutation = useMutation({
     mutationFn: (values: BlogFormValues) => {
       const payload = normalizePayload(values);
-      return mode === "create" ? blogsApi.create(payload) : blogsApi.update(blogId as string, payload);
+      return mode === "create"
+        ? blogsApi.create(payload)
+        : blogsApi.update(blogId as string, payload);
     },
-    onSuccess: () => {
-      toast.success(mode === "create" ? "Blog created successfully." : "Blog updated successfully.");
+    onSuccess: async (savedBlog) => {
+      if (mode === "create") {
+        const publicUrl = `${siteConfig.url}/blog/${savedBlog.slug}`;
+
+        try {
+          await navigator.clipboard.writeText(publicUrl);
+          toast.success(`Blog created. Public URL copied: ${publicUrl}`);
+        } catch {
+          toast.success(`Blog created. Public URL: ${publicUrl}`);
+        }
+      } else {
+        toast.success("Blog updated successfully.");
+      }
+
       queryClient.invalidateQueries({ queryKey: ["admin", "summary"] });
       queryClient.invalidateQueries({ queryKey: ["admin", "blogs"] });
       startTransition(() => {
@@ -165,25 +192,38 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
       });
     },
     onError: (error) => {
-      toast.error(getApiErrorMessage(error, "Unable to save the blog right now."));
-    }
+      toast.error(
+        getApiErrorMessage(error, "Unable to save the blog right now."),
+      );
+    },
   });
 
   const toggleTag = (tagId: string) => {
-    const next = watchedTagIds.includes(tagId) ? watchedTagIds.filter((value) => value !== tagId) : [...watchedTagIds, tagId];
+    const next = watchedTagIds.includes(tagId)
+      ? watchedTagIds.filter((value) => value !== tagId)
+      : [...watchedTagIds, tagId];
     form.setValue("tagIds", next, { shouldDirty: true });
   };
 
   if (mode === "edit" && existingBlogQuery.isLoading) {
-    return <Card className="rounded-[2rem] p-8 text-sm text-stone">Loading blog editor...</Card>;
+    return (
+      <Card className="rounded-[2rem] p-8 text-sm text-stone">
+        Loading blog editor...
+      </Card>
+    );
   }
 
   return (
     <div className="space-y-8">
       <Card className="bg-white/85">
         <CardHeader>
-          <CardTitle className="font-serif text-4xl">{mode === "create" ? "Create a new blog" : "Edit blog"}</CardTitle>
-          <CardDescription>Write manually, generate with AI, or combine both. Every field is structured for search, Pinterest, and affiliate-ready content.</CardDescription>
+          <CardTitle className="font-serif text-4xl">
+            {mode === "create" ? "Create a new blog" : "Edit blog"}
+          </CardTitle>
+          <CardDescription>
+            Write manually, generate with AI, or combine both. Every field is
+            structured for search and affiliate-ready content.
+          </CardDescription>
         </CardHeader>
       </Card>
 
@@ -191,18 +231,22 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
         getContext={() => ({
           title: form.getValues("title"),
           excerpt: form.getValues("excerpt"),
-          content: form.getValues("content")
+          content: form.getValues("content"),
         })}
         onApplyBlog={(payload) => {
           form.setValue("title", payload.title, { shouldDirty: true });
           form.setValue("excerpt", payload.excerpt, { shouldDirty: true });
           form.setValue("content", payload.content, { shouldDirty: true });
           form.setValue("metaTitle", payload.seoTitle, { shouldDirty: true });
-          form.setValue("metaDescription", payload.metaDescription, { shouldDirty: true });
+          form.setValue("metaDescription", payload.metaDescription, {
+            shouldDirty: true,
+          });
         }}
         onApplySeo={(payload) => {
           form.setValue("metaTitle", payload.seoTitle, { shouldDirty: true });
-          form.setValue("metaDescription", payload.metaDescription, { shouldDirty: true });
+          form.setValue("metaDescription", payload.metaDescription, {
+            shouldDirty: true,
+          });
         }}
       />
 
@@ -220,7 +264,7 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
             if (firstMessage) {
               toast.error(firstMessage);
             }
-          }
+          },
         )}
       >
         <Card className="bg-white/85">
@@ -230,32 +274,65 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
           <CardContent className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Title</label>
-                <Input placeholder="Minimal living room ideas that still feel warm" {...form.register("title")} />
+                <label className="text-sm font-medium text-foreground">
+                  Title
+                </label>
+                <Input
+                  placeholder="Minimal living room ideas that still feel warm"
+                  {...form.register("title")}
+                />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Slug</label>
-                <Input placeholder="minimal-living-room-ideas" {...form.register("slug")} />
+                <label className="text-sm font-medium text-foreground">
+                  Slug
+                </label>
+                <Input
+                  placeholder="minimal-living-room-ideas"
+                  {...form.register("slug")}
+                />
+                <p className="text-xs text-stone">
+                  Public blog URL: {publicUrlPreview}
+                </p>
+                <p className="text-xs text-stone/80">
+                  Use this URL as the Pinterest destination. If the slug is
+                  already taken, the final saved URL may get a numeric suffix.
+                </p>
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Excerpt</label>
-              <Textarea placeholder="Short description for cards, previews, and metadata." {...form.register("excerpt")} />
+              <label className="text-sm font-medium text-foreground">
+                Excerpt
+              </label>
+              <Textarea
+                placeholder="Short description for cards, previews, and metadata."
+                {...form.register("excerpt")}
+              />
             </div>
             <Controller
               control={form.control}
               name="featuredImage"
               render={({ field }) => (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Featured image</label>
-                  <ImageUploadField folder="featured" onChange={field.onChange} value={field.value} />
+                  <label className="text-sm font-medium text-foreground">
+                    Featured image
+                  </label>
+                  <ImageUploadField
+                    folder="featured"
+                    onChange={field.onChange}
+                    value={field.value}
+                  />
                 </div>
               )}
             />
             <div className="grid gap-6 md:grid-cols-3">
               <div className="space-y-2 md:col-span-1">
-                <label className="text-sm font-medium text-foreground">Category</label>
-                <select className={selectClassName} {...form.register("categoryId")}>
+                <label className="text-sm font-medium text-foreground">
+                  Category
+                </label>
+                <select
+                  className={selectClassName}
+                  {...form.register("categoryId")}
+                >
                   <option value="">Select category</option>
                   {categoriesQuery.data?.map((category) => (
                     <option key={category.id} value={category.id}>
@@ -265,26 +342,33 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
                 </select>
               </div>
               <div className="space-y-2 md:col-span-1">
-                <label className="text-sm font-medium text-foreground">Status</label>
-                <select className={selectClassName} {...form.register("status")}>
+                <label className="text-sm font-medium text-foreground">
+                  Status
+                </label>
+                <select
+                  className={selectClassName}
+                  {...form.register("status")}
+                >
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
                 </select>
               </div>
-              <div className="space-y-2 md:col-span-1">
-                <label className="text-sm font-medium text-foreground">Pinterest URL</label>
-                <Input placeholder="https://pinterest.com/..." {...form.register("pinterestUrl")} />
-              </div>
             </div>
             <div className="space-y-3">
-              <label className="text-sm font-medium text-foreground">Tags</label>
+              <label className="text-sm font-medium text-foreground">
+                Tags
+              </label>
               <div className="flex flex-wrap gap-3">
                 {tagsQuery.data?.map((tag) => {
                   const active = watchedTagIds.includes(tag.id);
 
                   return (
                     <button
-                      className={active ? "rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background" : "rounded-full border border-line bg-card px-4 py-2 text-sm font-medium text-stone"}
+                      className={
+                        active
+                          ? "rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background"
+                          : "rounded-full border border-line bg-card px-4 py-2 text-sm font-medium text-stone"
+                      }
                       key={tag.id}
                       onClick={(event) => {
                         event.preventDefault();
@@ -303,7 +387,9 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
               name="content"
               render={({ field }) => (
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Article content</label>
+                  <label className="text-sm font-medium text-foreground">
+                    Article content
+                  </label>
                   <RichEditor onChange={field.onChange} value={field.value} />
                 </div>
               )}
@@ -313,17 +399,29 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
 
         <Card className="bg-white/85">
           <CardHeader>
-            <CardTitle className="font-serif text-3xl">SEO and metadata</CardTitle>
+            <CardTitle className="font-serif text-3xl">
+              SEO and metadata
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">SEO title</label>
-                <Input placeholder="Search-friendly headline" {...form.register("metaTitle")} />
+                <label className="text-sm font-medium text-foreground">
+                  SEO title
+                </label>
+                <Input
+                  placeholder="Search-friendly headline"
+                  {...form.register("metaTitle")}
+                />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Meta description</label>
-                <Textarea placeholder="Compelling meta description for search and social cards" {...form.register("metaDescription")} />
+                <label className="text-sm font-medium text-foreground">
+                  Meta description
+                </label>
+                <Textarea
+                  placeholder="Compelling meta description for search and social cards"
+                  {...form.register("metaDescription")}
+                />
               </div>
             </div>
           </CardContent>
@@ -333,11 +431,24 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <CardTitle className="font-serif text-3xl">Product recommendations</CardTitle>
-                <CardDescription>Add affiliate or external product links that appear inside the story.</CardDescription>
+                <CardTitle className="font-serif text-3xl">
+                  Product recommendations
+                </CardTitle>
+                <CardDescription>
+                  Add affiliate or external product links that appear inside the
+                  story.
+                </CardDescription>
               </div>
               <Button
-                onClick={() => append({ title: "", description: "", image: "", buyUrl: "https://", price: "" })}
+                onClick={() =>
+                  append({
+                    title: "",
+                    description: "",
+                    image: "",
+                    buyUrl: "https://",
+                    price: "",
+                  })
+                }
                 type="button"
                 variant="secondary"
               >
@@ -348,26 +459,52 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
           <CardContent className="space-y-6">
             {fields.length === 0 ? <Badge>No products added yet</Badge> : null}
             {fields.map((field, index) => (
-              <div className="space-y-4 rounded-[1.75rem] border border-line bg-card/80 p-5" key={field.id}>
+              <div
+                className="space-y-4 rounded-[1.75rem] border border-line bg-card/80 p-5"
+                key={field.id}
+              >
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium text-foreground">Product {index + 1}</p>
-                  <Button onClick={() => remove(index)} size="sm" type="button" variant="ghost">
+                  <p className="text-sm font-medium text-foreground">
+                    Product {index + 1}
+                  </p>
+                  <Button
+                    onClick={() => remove(index)}
+                    size="sm"
+                    type="button"
+                    variant="ghost"
+                  >
                     <Trash2 className="mr-2 h-4 w-4" /> Remove
                   </Button>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Input placeholder="Product title" {...form.register(`products.${index}.title`)} />
-                  <Input placeholder="Buy URL" {...form.register(`products.${index}.buyUrl`)} />
-                  <Input placeholder="Price" {...form.register(`products.${index}.price`)} />
+                  <Input
+                    placeholder="Product title"
+                    {...form.register(`products.${index}.title`)}
+                  />
+                  <Input
+                    placeholder="Buy URL"
+                    {...form.register(`products.${index}.buyUrl`)}
+                  />
+                  <Input
+                    placeholder="Price"
+                    {...form.register(`products.${index}.price`)}
+                  />
                   <Controller
                     control={form.control}
                     name={`products.${index}.image`}
                     render={({ field: imageField }) => (
-                      <ImageUploadField folder="products" onChange={imageField.onChange} value={imageField.value} />
+                      <ImageUploadField
+                        folder="products"
+                        onChange={imageField.onChange}
+                        value={imageField.value}
+                      />
                     )}
                   />
                 </div>
-                <Textarea placeholder="Short product description" {...form.register(`products.${index}.description`)} />
+                <Textarea
+                  placeholder="Short product description"
+                  {...form.register(`products.${index}.description`)}
+                />
               </div>
             ))}
           </CardContent>
@@ -377,7 +514,12 @@ export const BlogForm = ({ blogId, mode }: { blogId?: string; mode: "create" | "
           <Button disabled={saveMutation.isPending} size="lg" type="submit">
             {mode === "create" ? "Create blog" : "Save changes"}
           </Button>
-          <Button onClick={() => router.push("/blogs")} size="lg" type="button" variant="secondary">
+          <Button
+            onClick={() => router.push("/blogs")}
+            size="lg"
+            type="button"
+            variant="secondary"
+          >
             Cancel
           </Button>
         </div>
