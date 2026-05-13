@@ -335,7 +335,7 @@ export default async function HomePage() {
         {latestFeatured ? (
           <Reveal delay={0.08}>
             <Link
-              className="grid overflow-hidden rounded-md border border-[rgba(143,166,138,0.22)] bg-[rgb(var(--hero-warm-white))] transition hover:border-[rgba(143,166,138,0.45)] lg:grid-cols-[1.1fr_1fr]"
+              className="grid overflow-hidden rounded-2xl border border-[rgba(143,166,138,0.22)] bg-[rgb(var(--hero-warm-white))] transition hover:border-[rgba(143,166,138,0.45)] lg:grid-cols-[1.1fr_1fr]"
               href={`/blog/${latestFeatured.slug}`}
             >
               <div className="relative h-[320px] overflow-hidden bg-[rgb(var(--hero-cream))] md:h-[400px]">
@@ -401,7 +401,7 @@ export default async function HomePage() {
           <div className="grid gap-5 lg:grid-cols-3">
             {latestGrid.map((blog) => (
               <Link
-                className="overflow-hidden rounded-md border border-[rgba(143,166,138,0.22)] bg-[rgb(var(--hero-warm-white))] transition hover:border-[rgba(143,166,138,0.45)]"
+                className="overflow-hidden rounded-xl border border-[rgba(143,166,138,0.22)] bg-[rgb(var(--hero-warm-white))] transition hover:border-[rgba(143,166,138,0.45)]"
                 href={`/blog/${blog.slug}`}
                 key={blog.id}
               >
@@ -489,7 +489,7 @@ export default async function HomePage() {
         ) : null}
       </section>
 
-      <section className="section-shell grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+      {/* <section className="section-shell grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <Reveal>
           <SectionHeading
             description="Categories are structured around Pinterest-worthy content themes that still read like polished editorial sections."
@@ -519,9 +519,9 @@ export default async function HomePage() {
             ))}
           </div>
         </Reveal>
-      </section>
+      </section> */}
 
-      <section className="section-shell space-y-8">
+      {/* <section className="section-shell space-y-8">
         <Reveal>
           <SectionHeading
             description="These are the stories currently earning the strongest attention signals and click-ready momentum."
@@ -557,7 +557,7 @@ export default async function HomePage() {
             ))}
           </div>
         </Reveal>
-      </section>
+      </section> */}
 
       <section className="section-shell space-y-8">
         <Reveal>
