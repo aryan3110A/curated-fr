@@ -15,6 +15,17 @@
   --lavender: 214 205 224;
   --peach: 239 213 193;
   --gold: 232 219 175;
+  --hero-cream: 248 244 239;
+  --hero-warm-white: 253 250 246;
+  --hero-sage: 143 166 138;
+  --hero-sage-light: 197 212 191;
+  --hero-sage-dark: 92 122 86;
+  --hero-rose: 201 131 110;
+  --hero-rose-light: 232 196 184;
+  --hero-gold: 196 162 90;
+  --hero-gold-light: 232 217 181;
+  --hero-charcoal: 44 42 38;
+  --hero-muted: 122 116 104;
 }
 
 html {
@@ -47,6 +58,67 @@ body::before {
 
 .section-shell {
   @apply mx-auto max-w-7xl px-4 md:px-6 lg:px-8;
+}
+
+.font-jost {
+  font-family: var(--font-jost), sans-serif;
+}
+
+.font-playfair {
+  font-family: var(--font-playfair), serif;
+}
+
+.font-cormorant {
+  font-family: var(--font-cormorant), serif;
+}
+
+.hero-fade-up {
+  animation: hero-fade-up 0.7s ease both;
+}
+
+.hero-slide-in {
+  animation: hero-slide-in 0.9s ease both;
+}
+
+.hero-scroll-line {
+  animation: hero-scroll-bob 2s ease-in-out infinite;
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes hero-scroll-bob {
+  0%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: scaleY(1.3);
+    opacity: 0.9;
+  }
 }
 
 .article-content {
