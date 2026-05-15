@@ -1,11 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Bookmark } from "lucide-react";
 
-import { ProductCard } from "@/components/blog/product-card";
+import { MediaPlaceholder } from "@/components/shared/media-placeholder";
 import { NewsletterCard } from "@/components/shared/newsletter-card";
 import { Reveal } from "@/components/shared/reveal";
-import { SectionHeading } from "@/components/shared/section-heading";
 import { Card, CardContent } from "@/components/ui/card";
 import { isRenderableImageUrl } from "@/lib/media";
 import { formatCompactDate } from "@/lib/utils";
@@ -42,6 +41,15 @@ export default async function HomePage() {
       src: "https://images.unsplash.com/photo-1615874694520-474822394e73?auto=format&fit=crop&w=400&q=80",
     },
   ] as const;
+  const getProductBadge = (title: string) => {
+    const words = title.trim().split(/\s+/).filter(Boolean);
+    return words.at(-1) ?? "Decor";
+  };
+
+  const getProductSubtitle = (title: string) => {
+    const badge = getProductBadge(title);
+    return `From our ${badge} edit`;
+  };
 
   return (
     <div className="space-y-24 pb-10 md:space-y-32 md:pb-14">
@@ -54,7 +62,7 @@ export default async function HomePage() {
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-[88px] bg-[radial-gradient(circle_at_10%_50%,rgba(232,217,181,0.26),transparent_22%),radial-gradient(circle_at_28%_50%,rgba(232,217,181,0.18),transparent_20%),radial-gradient(circle_at_46%_50%,rgba(232,217,181,0.12),transparent_18%),radial-gradient(circle_at_64%_50%,rgba(232,217,181,0.12),transparent_18%),radial-gradient(circle_at_82%_50%,rgba(232,217,181,0.14),transparent_18%)] opacity-80"
         /> */}
-        <div className="relative z-10 px-[35px]">
+        <div className="section-shell relative z-10">
           <h2 className="sr-only">
             The Curated Counter home decor hero section
           </h2>
@@ -63,7 +71,7 @@ export default async function HomePage() {
             <div className="relative flex flex-col justify-center pb-8 pl-0 pr-0 pt-4 lg:pb-0 lg:pl-0 lg:pr-8 lg:pt-9">
               <svg
                 aria-hidden="true"
-                className="hero-fade-up pointer-events-none absolute -left-14 bottom-0 hidden opacity-[0.9] lg:block"
+                className="hero-fade-up pointer-events-none absolute -left-[60px] bottom-0 hidden opacity-[0.9] lg:block"
                 fill="none"
                 height="320"
                 style={{ animationDelay: "0.6s" }}
@@ -175,14 +183,14 @@ export default async function HomePage() {
               </div>
 
               <div
-                className="hero-fade-up mb-7 flex items-center gap-8"
+                className="hero-fade-up mb-7 flex items-center gap-6"
                 style={{ animationDelay: "0.24s" }}
               >
                 <span className="text-[13px] text-[rgb(var(--hero-sage))]">
                   *
                 </span>
-                <div className="flex max-w-[84px] flex-1 items-center gap-[6px]">
-                  {Array.from({ length: 5 }).map((_, index) => (
+                <div className="flex max-w-[70px] flex-1 items-center gap-[8px]">
+                  {Array.from({ length: 8 }).map((_, index) => (
                     <span
                       className="h-[3px] w-[3px] rounded-full bg-[rgb(var(--hero-sage-light))]"
                       key={index}
@@ -297,7 +305,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="space-y-8 px-10">
+      <section className="section-shell space-y-6">
         <Reveal>
           <div className="border-b border-[rgba(143,166,138,0.22)] px-0 pb-7">
             <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
@@ -559,23 +567,122 @@ export default async function HomePage() {
         </Reveal>
       </section> */}
 
-      <section className="section-shell space-y-8">
+      <section className="section-shell py-[80px] md:py-[80px]">
         <Reveal>
-          <SectionHeading
-            description="Product cards are woven into stories without breaking the editorial tone, making affiliate content feel considered instead of pushy."
-            eyebrow="Products"
-            title="Elegant buying moments designed for editorial trust"
-          />
+          <div className="grid items-end gap-8 border-b border-[#E8DDD0] pb-10 md:grid-cols-[1fr_auto] md:gap-8">
+            <div className="max-w-[620px]">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#EEE6D9] px-[14px] py-[6px] font-jost text-[10px] font-medium uppercase tracking-[0.14em] text-[#5C4F48]">
+                <span className="h-[5px] w-[5px] rounded-full bg-[#9C7D6A]" />
+                Products
+              </div>
+              <h2 className="font-playfair text-[38px] font-normal leading-[1.15] text-[rgb(var(--hero-charcoal))]">
+                Curated finds for
+                {/* dhbudxn */}
+                <em className="italic text-[rgb(var(--hero-rose))]">
+                  considered living
+                </em>
+              </h2>
+              <p className="mt-[18px] max-w-[480px] font-jost text-[14px] font-light leading-[1.75] text-[#786E6C]">
+                Each piece is woven into our stories - never interrupting the
+                editorial voice, always adding to it. Shop what inspires you.
+              </p>
+            </div>
+
+            <Link
+              className="inline-flex items-center gap-[6px] self-start border-b border-[#E8DDD0] pb-1 font-jost text-[12px] font-normal tracking-[0.06em] text-[#786E6C] transition hover:border-[#241F1B] hover:text-[#241F1B] md:self-end"
+              href="/blog"
+            >
+              View all
+              <ArrowUpRight className="h-[14px] w-[14px]" strokeWidth={1.5} />
+            </Link>
+          </div>
         </Reveal>
         <Reveal delay={0.08}>
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {productShowcase.map((product) => (
-              <ProductCard
-                blogHref={`/blog/${product.blogSlug}`}
-                key={`${product.blogSlug}-${product.id}`}
-                product={product}
-              />
-            ))}
+          <div className="grid gap-5 pt-[56px] md:grid-cols-2 xl:grid-cols-4">
+            {productShowcase.map((product) => {
+              const productImageUrl = isRenderableImageUrl(product.image)
+                ? product.image
+                : undefined;
+              const badge = getProductBadge(product.title);
+
+              return (
+                <article
+                  className="group relative flex h-full flex-col overflow-hidden rounded-[16px] border border-[#EDE5D8] bg-white transition duration-300 hover:-translate-y-1 hover:border-[#D8C8B8] hover:shadow-[0_20px_48px_rgba(36,31,27,0.08)]"
+                  key={`${product.blogSlug}-${product.id}`}
+                >
+                  <div className="relative aspect-[4/3.2] overflow-hidden bg-[#EEE6D9]">
+                    {productImageUrl ? (
+                      <Image
+                        alt={product.title}
+                        className="object-cover transition duration-[550ms] group-hover:scale-[1.04]"
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                        src={productImageUrl}
+                      />
+                    ) : (
+                      <MediaPlaceholder
+                        className="h-full w-full"
+                        compact
+                        label={product.title}
+                        seed={product.title}
+                      />
+                    )}
+
+                    <div className="absolute bottom-3 left-3 rounded-full bg-[rgba(251,246,239,0.88)] px-[10px] py-1 font-jost text-[10px] font-medium uppercase tracking-[0.1em] text-[#5C4F48] backdrop-blur-[4px]">
+                      {badge}
+                    </div>
+
+                    <div className="absolute right-3 top-3 flex h-8 w-8 scale-90 items-center justify-center rounded-full bg-[rgba(251,246,239,0.9)] opacity-0 backdrop-blur-[4px] transition duration-200 group-hover:scale-100 group-hover:opacity-100">
+                      <Bookmark
+                        className="h-[14px] w-[14px] text-[#241F1B]"
+                        strokeWidth={1.8}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-1 flex-col px-[22px] pb-6 pt-5">
+                    <div className="mb-2 flex items-start justify-between gap-3">
+                      <h3 className="font-cormorant text-[18px] font-medium leading-[1.25] tracking-[-0.01em] text-[#241F1B]">
+                        {product.title}
+                      </h3>
+                      {product.price ? (
+                        <span className="mt-[2px] shrink-0 rounded-full bg-[#EEE6D9] px-[10px] py-1 font-jost text-[12px] font-medium text-[#5C4F48]">
+                          {product.price}
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <p className="mb-[14px] font-jost text-[11.5px] font-normal tracking-[0.03em] text-[#786E6C]">
+                      {getProductSubtitle(product.title)}
+                    </p>
+
+                    <div className="mb-[18px] h-px w-full bg-[#E8DDD0]" />
+
+                    <p className="mb-[22px] flex-1 font-jost text-[13px] font-light leading-[1.65] text-[#786E6C]">
+                      {product.description}
+                    </p>
+
+                    <div className="flex flex-col items-start gap-3">
+                      <Link
+                        className="group inline-flex items-center gap-2 rounded-full bg-[#241F1B] px-5 py-[11px] font-jost text-[12px] font-normal uppercase tracking-[0.06em] text-[#FBF6EF] transition hover:scale-[1.02] hover:bg-[#3D3530] active:scale-[0.98]"
+                        href={product.buyUrl}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Shop now
+                        <ArrowUpRight className="h-3 w-3 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </Link>
+                      <Link
+                        className="border-b border-[#E8DDD0] pb-[2px] font-jost text-[12px] font-normal tracking-[0.03em] text-[#786E6C] transition hover:border-[#241F1B] hover:text-[#241F1B]"
+                        href={`/blog/${product.blogSlug}`}
+                      >
+                        Read the full story
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </Reveal>
       </section>

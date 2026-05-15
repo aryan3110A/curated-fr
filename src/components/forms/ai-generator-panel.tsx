@@ -14,11 +14,20 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { getApiErrorMessage } from "@/lib/api-error";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { aiApi } from "@/services/api/ai";
 
 const selectClassName =
   "h-12 w-full rounded-2xl border border-line bg-white/80 px-4 py-3 text-sm text-foreground shadow-sm outline-none transition focus:border-stone/30 focus:ring-2 focus:ring-stone/10";
+const errorClassName =
+  "border-red-400 bg-red-50/60 text-red-900 placeholder:text-red-400 focus:border-red-500 focus:ring-red-100";
+
+type GeneratorFieldErrors = {
+  topic?: string;
+  keywords?: string;
+};
 
 export const AIGeneratorPanel = ({
   getContext,
@@ -39,16 +48,35 @@ export const AIGeneratorPanel = ({
   const [keywords, setKeywords] = useState("");
   const [tone, setTone] = useState("editorial");
   const [captionPreview, setCaptionPreview] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<GeneratorFieldErrors>({});
 
   const keywordList = keywords
     .split(",")
     .map((keyword) => keyword.trim())
     .filter(Boolean);
 
+  const validateGeneratorFields = (input: {
+    topicValue?: string;
+    requireTopic?: boolean;
+  }) => {
+    const nextErrors: GeneratorFieldErrors = {};
+
+    if (
+      input.requireTopic &&
+      (!input.topicValue || input.topicValue.trim().length < 4)
+    ) {
+      nextErrors.topic = "Topic must be at least 4 characters.";
+    }
+
+    setFieldErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const blogMutation = useMutation({
     mutationFn: () =>
       aiApi.generateBlog({ topic, keywords: keywordList, tone }),
     onSuccess: (result) => {
+      setFieldErrors({});
       onApplyBlog({
         title: result.title,
         excerpt: result.excerpt,
@@ -59,8 +87,8 @@ export const AIGeneratorPanel = ({
       setCaptionPreview(result.pinterestCaption);
       toast.success("AI draft applied to the form.");
     },
-    onError: () => {
-      toast.error("AI blog generation failed.");
+    onError: (error) => {
+      toast.error(getApiErrorMessage(error, "AI blog generation failed."));
     },
   });
 
@@ -82,15 +110,39 @@ export const AIGeneratorPanel = ({
         keywords: keywordList,
       }),
     onSuccess: (result) => {
+      setFieldErrors({});
       setCaptionPreview(
         `${result.caption} ${result.hashtags.join(" ")}`.trim(),
       );
       toast.success("Pinterest caption generated.");
     },
-    onError: () => {
-      toast.error("Caption generation failed.");
+    onError: (error) => {
+      toast.error(getApiErrorMessage(error, "Caption generation failed."));
     },
   });
+
+  const handleGenerateDraft = () => {
+    if (!validateGeneratorFields({ topicValue: topic, requireTopic: true })) {
+      toast.error("Fix the highlighted AI fields first.");
+      return;
+    }
+
+    blogMutation.mutate();
+  };
+
+  const handleGenerateCaption = () => {
+    if (
+      !validateGeneratorFields({
+        topicValue: getContext().title || topic,
+        requireTopic: true,
+      })
+    ) {
+      toast.error("Fix the highlighted AI fields first.");
+      return;
+    }
+
+    captionMutation.mutate();
+  };
 
   return (
     <Card className="bg-white/85">
@@ -106,7 +158,12 @@ export const AIGeneratorPanel = ({
       <CardContent className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <Input
-            onChange={(event) => setTopic(event.target.value)}
+            aria-invalid={Boolean(fieldErrors.topic)}
+            className={cn(fieldErrors.topic && errorClassName)}
+            onChange={(event) => {
+              setTopic(event.target.value);
+              setFieldErrors((current) => ({ ...current, topic: undefined }));
+            }}
             placeholder="Topic, such as warm neutral bedroom ideas"
             value={topic}
           />
@@ -122,15 +179,26 @@ export const AIGeneratorPanel = ({
             <option value="practical">Practical</option>
           </select>
         </div>
+        {fieldErrors.topic ? (
+          <p className="text-sm text-red-500">{fieldErrors.topic}</p>
+        ) : null}
         <Textarea
-          onChange={(event) => setKeywords(event.target.value)}
+          aria-invalid={Boolean(fieldErrors.keywords)}
+          className={cn(fieldErrors.keywords && errorClassName)}
+          onChange={(event) => {
+            setKeywords(event.target.value);
+            setFieldErrors((current) => ({ ...current, keywords: undefined }));
+          }}
           placeholder="Comma separated keywords"
           value={keywords}
         />
+        {fieldErrors.keywords ? (
+          <p className="text-sm text-red-500">{fieldErrors.keywords}</p>
+        ) : null}
         <div className="flex flex-wrap gap-3">
           <Button
             disabled={blogMutation.isPending || !topic.trim()}
-            onClick={() => blogMutation.mutate()}
+            onClick={handleGenerateDraft}
             type="button"
           >
             {blogMutation.isPending ? "Generating draft..." : "Generate draft"}
@@ -145,7 +213,7 @@ export const AIGeneratorPanel = ({
           </Button>
           <Button
             disabled={captionMutation.isPending}
-            onClick={() => captionMutation.mutate()}
+            onClick={handleGenerateCaption}
             type="button"
             variant="ghost"
           >

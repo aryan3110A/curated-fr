@@ -1,1 +1,1 @@
-export const ADMIN_ENTRY_PATH = "/editorial-vault-cc7m4k";
+export const ADMIN_ENTRY_PATH = "/admin-drashti";

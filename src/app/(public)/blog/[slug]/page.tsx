@@ -196,7 +196,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       </section>
 
       {blog.products.length ? (
-        <section className="section-shell space-y-8">
+        <section className="section-shell space-y-6">
           <div className="max-w-2xl space-y-4">
             <Badge variant="gold">Shop the edit</Badge>
             <h2 className="font-serif text-4xl text-foreground md:text-5xl">
@@ -216,7 +216,7 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
       ) : null}
 
       {relatedBlogs.length ? (
-        <section className="section-shell space-y-8">
+        <section className="section-shell space-y-6">
           <div className="max-w-2xl space-y-4">
             <Badge variant="sage">Related</Badge>
             <h2 className="font-serif text-4xl text-foreground md:text-5xl">

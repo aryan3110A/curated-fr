@@ -14,18 +14,12 @@ export const Navbar = () => {
 
   return (
     <header
-      className={
-        isHomePage
-          ? "relative z-40 border-b border-[rgba(143,166,138,0.25)] bg-[rgb(var(--hero-warm-white))]"
-          : "sticky top-0 z-40 border-b border-[rgba(143,166,138,0.25)] bg-[rgb(var(--hero-warm-white)/0.92)] backdrop-blur-xl"
-      }
+      className= "sticky top-0 z-40 border-b border-[rgba(143,166,138,0.25)] bg-[rgb(var(--hero-warm-white)/0.92)] backdrop-blur-xl"
+      
     >
       <div
-        className={
-          isHomePage
-            ? "mx-auto flex max-w-none items-center gap-6 px-[28px] py-[8px]"
-            : "mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-[18px] md:px-6 lg:px-8"
-        }
+        className= "mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-[18px] md:px-6 lg:px-8"
+        
       >
         <Link className="flex items-center gap-3" href="/">
           <div className="flex h-[52px] w-[52px] items-center justify-center overflow-hidden rounded-full border border-[rgba(143,166,138,0.3)] bg-[rgb(var(--hero-cream))]">
