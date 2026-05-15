@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  Jost,
+  Manrope,
+  Playfair_Display,
+} from "next/font/google";
 
 import { Providers } from "@/components/shared/providers";
 import { siteConfig } from "@/config/site";
@@ -14,7 +19,21 @@ const manrope = Manrope({
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   variable: "--font-cormorant",
-  weight: ["500", "600", "700"]
+  style: ["normal", "italic"],
+  weight: ["300", "400", "500", "600", "700"]
+});
+
+const jost = Jost({
+  subsets: ["latin"],
+  variable: "--font-jost",
+  weight: ["300", "400", "500"]
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  style: ["normal", "italic"],
+  weight: ["400", "500"]
 });
 
 export const metadata: Metadata = {
@@ -44,7 +63,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html className={`${manrope.variable} ${cormorant.variable}`} lang="en">
+    <html
+      className={`${manrope.variable} ${cormorant.variable} ${jost.variable} ${playfair.variable}`}
+      lang="en"
+    >
       <body className="min-h-screen font-sans text-foreground antialiased">
         <Providers>{children}</Providers>
       </body>
