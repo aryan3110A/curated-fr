@@ -1,16 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
 
 export const Navbar = () => {
-  const pathname = usePathname();
-  const isHomePage = pathname === "/";
-  const navItems = isHomePage
-    ? siteConfig.navigation.filter((item) => item.href !== "/search")
-    : siteConfig.navigation;
+  // Commented out search and category tab from the nav bar (commented out in siteConfig.navigation)
+  const navItems = siteConfig.navigation;
 
   return (
     <header
